@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.sceneview.sample.arcloudanchor">
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
     <application
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_foreground"
         android:label="@string/app_name"
         android:theme="@style/Theme.SceneViewSample">
+
         <meta-data
             android:name="com.google.android.ar.API_KEY"
             android:value="YOUR_API_KEY_HERE"/>
@@ -20,5 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:label="@string/app_name" android:name=".HandleAr"/>
     </application>
 </manifest>

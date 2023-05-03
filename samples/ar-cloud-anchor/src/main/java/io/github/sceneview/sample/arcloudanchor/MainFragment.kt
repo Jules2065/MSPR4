@@ -1,211 +1,134 @@
 package io.github.sceneview.sample.arcloudanchor
 
+import android.media.MediaRecorder
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.Guideline
+import android.view.ViewGroup
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.ar.core.Anchor
-import com.google.ar.core.Session
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.node.ArModelNode
-import io.github.sceneview.ar.node.PlacementMode
+import io.github.sceneview.ar.node.CursorNode
+import io.github.sceneview.math.Position
 import io.github.sceneview.utils.doOnApplyWindowInsets
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private lateinit var sceneView: ArSceneView
-    private lateinit var loadingView: View
-    private lateinit var editText: EditText
-    private lateinit var hostButton: Button
-    private lateinit var resolveButton: Button
-    private lateinit var actionButton: ExtendedFloatingActionButton
+    lateinit var sceneView: ArSceneView
+    lateinit var loadingView: View
+    lateinit var anchorButton: ExtendedFloatingActionButton
+    lateinit var recordButton: ExtendedFloatingActionButton
 
-    private lateinit var cloudAnchorNode: ArModelNode
+    lateinit var cursorNode: CursorNode
+    lateinit var modelNode: ArModelNode
 
-    private var mode = Mode.HOME
-
-    private var isLoading = false
+    var isLoading = false
         set(value) {
             field = value
             loadingView.isGone = !value
+            anchorButton.isGone = value
+            recordButton.isGone = value
+        }
+
+    val fileName by lazy { "${requireContext().externalCacheDir?.absolutePath}/screen_record.mp4" }
+
+    lateinit var recorder: MediaRecorder
+
+    var isRecording = false
+        set(value) {
+            field = value
+            recordButton.setText(if (value) R.string.stop else R.string.record)
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val topGuideline = view.findViewById<Guideline>(R.id.topGuideline)
-        topGuideline.doOnApplyWindowInsets { systemBarsInsets ->
-            // Add the action bar margin
-            val actionBarHeight =
-                (requireActivity() as AppCompatActivity).supportActionBar?.height ?: 0
-            topGuideline.setGuidelineBegin(systemBarsInsets.top + actionBarHeight)
-        }
-        val bottomGuideline = view.findViewById<Guideline>(R.id.bottomGuideline)
-        bottomGuideline.doOnApplyWindowInsets { systemBarsInsets ->
-            // Add the navigation bar margin
-            bottomGuideline.setGuidelineEnd(systemBarsInsets.bottom)
-        }
-
-        sceneView = view.findViewById(R.id.sceneView)
-        sceneView.apply {
-            cloudAnchorEnabled = true
-        }
-
         loadingView = view.findViewById(R.id.loadingView)
-
-        actionButton = view.findViewById(R.id.actionButton)
-        actionButton.setOnClickListener {
-            actionButtonClicked()
+        anchorButton = view.findViewById<ExtendedFloatingActionButton>(R.id.anchorButton).apply {
+            val bottomMargin = (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+            doOnApplyWindowInsets { systemBarsInsets ->
+                (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
+                    systemBarsInsets.bottom + bottomMargin
+            }
+            setOnClickListener { cursorNode.createAnchor()?.let { anchorOrMove(it) } }
+        }
+        recordButton = view.findViewById<ExtendedFloatingActionButton>(R.id.recordButton).apply {
+            setOnClickListener {
+                isRecording = if (isRecording) {
+                    stopRecording()
+                    false
+                } else {
+                    startRecording()
+                    true
+                }
+            }
         }
 
-        editText = view.findViewById(R.id.editText)
-        editText.addTextChangedListener {
-            actionButton.isEnabled = !it.isNullOrBlank()
+        sceneView = view.findViewById<ArSceneView?>(R.id.sceneView).apply {
+            planeRenderer.isVisible = false
+            // Handle a fallback in case of non AR usage. The exception contains the failure reason
+            // e.g. SecurityException in case of camera permission denied
+            onArSessionFailed = { _: Exception ->
+                // If AR is not available or the camara permission has been denied, we add the model
+                // directly to the scene for a fallback 3D only usage
+                modelNode.centerModel(origin = Position(x = 0.0f, y = 0.0f, z = 0.0f))
+                modelNode.scaleModel(units = 1.0f)
+                sceneView.addChild(modelNode)
+            }
+            onTapAr = { hitResult, _ ->
+                anchorOrMove(hitResult.createAnchor())
+            }
         }
 
-        hostButton = view.findViewById(R.id.hostButton)
-        hostButton.setOnClickListener {
-            selectMode(Mode.HOST)
+        cursorNode = CursorNode().apply {
+            onHitResult = { node, _ ->
+                if (!isLoading) {
+                    anchorButton.isGone = !node.isTracking
+                }
+            }
         }
-
-        resolveButton = view.findViewById(R.id.resolveButton)
-        resolveButton.setOnClickListener {
-            selectMode(Mode.RESOLVE)
-        }
+        sceneView.addChild(cursorNode)
 
         isLoading = true
-        cloudAnchorNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL).apply {
-            parent = sceneView
-            isSmoothPoseEnable = false
-            isVisible = false
-            loadModelGlbAsync(
-                glbFileLocation = "models/spiderbot.glb"
-            ) {
+        modelNode = ArModelNode(
+            modelGlbFileLocation = "models/spiderbot.glb",
+            onLoaded = { modelInstance ->
+                anchorButton.text = getString(R.string.move_object)
+                anchorButton.setIconResource(R.drawable.ic_target)
                 isLoading = false
-            }
+            })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopRecording()
+    }
+
+    fun anchorOrMove(anchor: Anchor) {
+        if (!sceneView.children.contains(modelNode)) {
+            sceneView.addChild(modelNode)
         }
+        modelNode.anchor = anchor
     }
 
-    private fun actionButtonClicked() {
-        when (mode) {
-            Mode.HOME -> {}
-            Mode.HOST -> {
-                val frame = sceneView.currentFrame ?: return
-
-                if (!cloudAnchorNode.isAnchored) {
-                    cloudAnchorNode.anchor()
-                }
-
-                if (sceneView.arSession?.estimateFeatureMapQualityForHosting(frame.camera.pose) == Session.FeatureMapQuality.INSUFFICIENT) {
-                    Toast.makeText(context, R.string.insufficient_visual_data, Toast.LENGTH_LONG)
-                        .show()
-                    return
-                }
-
-                cloudAnchorNode.hostCloudAnchor { anchor: Anchor, success: Boolean ->
-                    if (success) {
-                        editText.setText(anchor.cloudAnchorId)
-                        selectMode(Mode.RESET)
-                    } else {
-                        Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_LONG).show()
-                        Log.d(
-                            TAG,
-                            "Unable to host the Cloud Anchor. The Cloud Anchor state is ${anchor.cloudAnchorState}"
-                        )
-                        selectMode(Mode.HOST)
-                    }
-                }
-
-                actionButton.apply {
-                    setText(R.string.hosting)
-                    isEnabled = true
-                }
-            }
-            Mode.RESOLVE -> {
-                cloudAnchorNode.resolveCloudAnchor(editText.text.toString()) { anchor: Anchor, success: Boolean ->
-                    if (success) {
-                        cloudAnchorNode.isVisible = true
-                        selectMode(Mode.RESET)
-                    } else {
-                        Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_LONG).show()
-                        Log.d(
-                            TAG,
-                            "Unable to resolve the Cloud Anchor. The Cloud Anchor state is ${anchor.cloudAnchorState}"
-                        )
-                        selectMode(Mode.RESOLVE)
-                    }
-                }
-
-                actionButton.apply {
-                    setText(R.string.resolving)
-                    isEnabled = false
-                }
-            }
-            Mode.RESET -> {
-                cloudAnchorNode.detachAnchor()
-                selectMode(Mode.HOME)
-            }
+    fun startRecording() {
+        recorder = MediaRecorder().apply {
+            setVideoSource(MediaRecorder.VideoSource.SURFACE)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setOutputFile(fileName)
+            setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT)
+            setVideoSize(sceneView.width, sceneView.height)
+            prepare()
         }
+        recorder.start()
+        sceneView.startMirroring(recorder.surface)
     }
 
-    private fun selectMode(mode: Mode) {
-        this.mode = mode
-
-        when (mode) {
-            Mode.HOME -> {
-                editText.isVisible = false
-                hostButton.isVisible = true
-                resolveButton.isVisible = true
-                actionButton.isVisible = false
-                cloudAnchorNode.isVisible = false
-            }
-            Mode.HOST -> {
-                hostButton.isVisible = false
-                resolveButton.isVisible = false
-                actionButton.apply {
-                    setIconResource(R.drawable.ic_host)
-                    setText(R.string.host)
-                    isVisible = true
-                    isEnabled = true
-                }
-                cloudAnchorNode.isVisible = true
-            }
-            Mode.RESOLVE -> {
-                editText.isVisible = true
-                hostButton.isVisible = false
-                resolveButton.isVisible = false
-                actionButton.apply {
-                    setIconResource(R.drawable.ic_resolve)
-                    setText(R.string.resolve)
-                    isVisible = true
-                    isEnabled = editText.text.isNotEmpty()
-                }
-            }
-            Mode.RESET -> {
-                editText.isVisible = true
-                actionButton.apply {
-                    setIconResource(R.drawable.ic_reset)
-                    setText(R.string.reset)
-                    isEnabled = true
-                }
-            }
-        }
-    }
-
-    private enum class Mode {
-        HOME, HOST, RESOLVE, RESET
-    }
-
-    companion object {
-        private const val TAG = "MainFragment"
+    private fun stopRecording() {
+        sceneView.stopMirroring(recorder.surface)
+        recorder.stop()
+        recorder.release()
     }
 }

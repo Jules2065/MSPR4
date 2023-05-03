@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AR Cloud Anchor Sample</string>
+    <string name="app_name">PayeTonKawa</string>
     <string name="host_cloud_anchor">Host Cloud Anchor</string>
     <string name="resolve_cloud_anchor">Resolve Cloud Anchor</string>
     <string name="host">Host</string>
@@ -10,4 +10,9 @@
     <string name="cloud_anchor_id_hint">Cloud Anchor ID</string>
     <string name="insufficient_visual_data">Insufficient visual data - move the device around the object and try again</string>
     <string name="error_occurred">Error occurred - see the log for more details</string>
+    <string name="place_object">Place at target</string>
+    <string name="move_object">Move to target</string>
+    <string name="record">Record</string>
+    <string name="stop">Stop</string>
+    <color name="white">#FFFFFF</color>
 </resources>

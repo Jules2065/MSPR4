@@ -1,20 +1,16 @@
-package io.github.sceneview.sample.arcursorplacement
+package io.github.sceneview.sample.arcloudanchor
 
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.commit
-import io.github.sceneview.utils.doOnApplyWindowInsets
-import io.github.sceneview.utils.setFullScreen
+import com.budiyev.android.codescanner.*
 
-class Activity : AppCompatActivity(R.layout.activity) {
-
+class HandleAr : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.ar_view)
 
 
-        setContentView(R.layout.activity)
 
         supportFragmentManager.commit {
             add(R.id.containerFragment, MainFragment::class.java, Bundle())
