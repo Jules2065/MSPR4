@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     )
 
     val models = listOf(
-        Model("models/spiderbot.glb"),
+        Model("models/coffee_machine.glb"),
         Model(
             fileLocation = "https://storage.googleapis.com/ar-answers-in-search-models/static/Tiger/model.glb",
             // Display the Tiger with a size of 3 m long

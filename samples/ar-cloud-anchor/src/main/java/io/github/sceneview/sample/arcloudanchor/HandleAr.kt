@@ -10,8 +10,6 @@ class HandleAr : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ar_view)
 
-
-
         supportFragmentManager.commit {
             add(R.id.containerFragment, MainFragment::class.java, Bundle())
         }

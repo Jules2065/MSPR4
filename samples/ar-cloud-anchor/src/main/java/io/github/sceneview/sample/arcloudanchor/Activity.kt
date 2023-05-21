@@ -3,24 +3,35 @@ package io.github.sceneview.sample.arcloudanchor
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.budiyev.android.codescanner.*
+import org.json.JSONArray
+
 class Activity : AppCompatActivity() {
 
     private lateinit var codeScanner: CodeScanner
     companion object {
         lateinit var appContext: Context
+        lateinit var model3D: String
+        lateinit var QRCodeValue: String
+        lateinit var globalJSON: JSONArray
+        var flag_api_tast: Boolean = false
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val scannerView = findViewById<CodeScannerView>(R.id.scanner_view)
+        appContext = this@Activity
+        globalJSON =  JSONArray()
+
+        val myIntent = Intent(this, HandleApi::class.java)
+        this.startActivity(myIntent)
+
+
+
+
+        /*val scannerView = findViewById<CodeScannerView>(R.id.scanner_view)
         val launchScan = findViewById<Button>(R.id.launch_scan)
         var onGoingScan: Boolean = false
-        appContext = this@Activity
         codeScanner = CodeScanner(this, scannerView)
 
         // Parameters (default values)
@@ -36,8 +47,9 @@ class Activity : AppCompatActivity() {
         // Callback quand un qr code est décodé
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
-                //val myIntent = Intent(this, ApiTask::class.java)
-                //this.startActivity(myIntent)
+                val myIntent = Intent(this, ApiTask::class.java)
+                this.startActivity(myIntent)
+                QRCodeValue = it.text
                 Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
             }
         }
@@ -62,15 +74,15 @@ class Activity : AppCompatActivity() {
                 scannerView.visibility = View.VISIBLE
                 codeScanner.startPreview()
             }
-        }
+        }*/
 
 
     }
 
-    override fun onPause() {
+    /*override fun onPause() {
         codeScanner.releaseResources()
         super.onPause()
-    }
+    }*/
 
 
 

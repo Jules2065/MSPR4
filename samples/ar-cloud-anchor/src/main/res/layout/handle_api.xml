@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity"
+    android:background="#FFFFFF">
+    <ImageView
+        android:id="@+id/logo_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/payetonkawa"/>
+    <TextView
+        android:id="@+id/text_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="#000000"
+        android:textSize="50px"
+        android:text="Liste des produits"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="#FF00FF">
+        <LinearLayout
+            android:id="@+id/list_api_products"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
+    <RelativeLayout
+        android:id="@+id/list_carac"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/carac_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="50px"
+            android:text="Date de création : "
+            android:layout_marginTop="100px"/>
+        <TextView
+            android:id="@+id/carac_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="50px"
+            android:text="Prix : "
+            android:layout_marginTop="50px"
+            android:layout_below="@+id/carac_time"/>
+        <TextView
+            android:id="@+id/carac_descr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="50px"
+            android:text="Description : "
+            android:layout_marginTop="50px"
+            android:layout_below="@+id/carac_price"/>
+        <TextView
+            android:id="@+id/carac_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="50px"
+            android:text="Stock : "
+            android:layout_marginTop="50px"
+            android:layout_below="@+id/carac_descr"/>
+        <Button
+            android:id="@+id/show_3d"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Afficher le modèle 3D"
+            android:layout_above="@+id/return_list_products"/>
+        <Button
+            android:id="@+id/return_list_products"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retourner à la liste des produits"
+            android:textColor="@android:color/black"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

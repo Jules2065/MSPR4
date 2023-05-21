@@ -93,7 +93,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         isLoading = true
         modelNode = ArModelNode(
-            modelGlbFileLocation = "models/spiderbot.glb",
+            modelGlbFileLocation = Activity.model3D,
             onLoaded = { modelInstance ->
                 anchorButton.text = getString(R.string.move_object)
                 anchorButton.setIconResource(R.drawable.ic_target)

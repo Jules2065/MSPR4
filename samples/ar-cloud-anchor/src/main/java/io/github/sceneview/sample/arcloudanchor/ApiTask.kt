@@ -1,11 +1,10 @@
 package io.github.sceneview.sample.arcloudanchor
 
-import android.app.ProgressDialog
 import android.os.AsyncTask
 import android.util.Log
 import android.widget.Toast
+import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -14,13 +13,15 @@ import java.net.URL
 
 class ApiTask : AsyncTask<String, String, String>() {
     override fun doInBackground(vararg p0: String): String {
+
+        val index = p0[0]
         var result = ""
         try {
-            val url: URL
+            var url: URL
             var urlConnection: HttpURLConnection? = null
+
             try {
-                Log.d("debug_api", "nique")
-                url = URL("http://127.0.0.1:8000/docs#/default/customers/1/orders")
+                url = URL("http://192.168.1.10:8000/customers/$index/orders/$index/products")
                 //open a URL coonnection
                 urlConnection = url.openConnection() as HttpURLConnection
                 val `in`: InputStream = urlConnection.inputStream
@@ -30,11 +31,9 @@ class ApiTask : AsyncTask<String, String, String>() {
                     result += data.toChar()
                     data = isw.read()
                 }
-
-                // return the data to onPostExecute method
-                Log.d("debug_api", "result :" + result)
-                return result
-            } catch (e: Exception) {
+            }
+            catch (e: Exception) {
+                Log.d("debug_api", "ça a merdé :$e")
                 e.printStackTrace()
             } finally {
                 if (urlConnection != null) {
@@ -49,24 +48,26 @@ class ApiTask : AsyncTask<String, String, String>() {
     override fun onPreExecute() {
         super.onPreExecute()
         // display a progress dialog for good user experiance
-        Toast.makeText(Activity.appContext, "processing results", Toast.LENGTH_LONG).show()
+
     }
 
-    override fun onPostExecute(s: String?) {
+    override fun onPostExecute(json: String?){
 
         // dismiss the progress dialog after receiving data from API
         try {
-            Log.d("debug_api", "s$s")
-            val jsonObject = JSONObject(s)
-            val jsonArray1 = jsonObject.getJSONArray("users")
-            //val jsonObject1 = jsonArray1.getJSONObject(index_no)
-            /*val id = jsonObject1.getString("id")
-            val name = jsonObject1.getString("name")
-            val my_users = "User ID: $id\nName: $name"
 
-            Log.d("debug_api", my_users)*/
+            val jsonArray = JSONArray(json)
+
+
+            for (i in 0..jsonArray.length()-1) {
+                Activity.globalJSON.put(jsonArray[i])
+            }
+            Log.d("debug_api", "fini :")
+
         } catch (e: JSONException) {
+            Log.d("debug_api", "errer : $e")
             e.printStackTrace()
         }
+        Activity.flag_api_tast = true
     }
 }
