@@ -1,5 +1,6 @@
 package io.github.sceneview.sample.arcloudanchor
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -21,14 +22,20 @@ class HandleApi : AppCompatActivity() {
         val scope = CoroutineScope(Dispatchers.Main)
         val listProduct: LinearLayout = findViewById(R.id.list_api_products)
         val listCarac: RelativeLayout = findViewById(R.id.list_carac)
+        val textHeader: TextView = findViewById(R.id.text_header)
         val time: TextView = findViewById(R.id.carac_time)
         val price: TextView = findViewById(R.id.carac_price)
         val descr: TextView = findViewById(R.id.carac_descr)
         val stock: TextView = findViewById(R.id.carac_stock)
         val show3D: Button = findViewById(R.id.show_3d)
         val returnListProducts: Button = findViewById(R.id.return_list_products)
-        returnListProducts.setOnClickListener {
 
+        show3D.setOnClickListener {
+            val myIntent = Intent(this, HandleAr::class.java)
+            this.startActivity(myIntent)
+        }
+        returnListProducts.setOnClickListener {
+            textHeader.text = "Liste des produits"
             listProduct.visibility = View.VISIBLE
             listCarac.visibility = View.GONE
         }
@@ -69,7 +76,7 @@ class HandleApi : AppCompatActivity() {
                         val buttonClickListener = View.OnClickListener { view ->
                             if (view is Button) {
                                 //On récupère le texte du bouton et on s'en sert pour afficher ses caractéristiques
-                                Log.d("debug_api", "view ${view.text}")
+                                textHeader.text = "Caractéristiques du produit"
                                 listProduct.visibility = View.GONE
                                 listCarac.visibility = View.VISIBLE
                                 time.text = "Date de création : " + dictProducts[view.text.toString()]!!["creationTime"]

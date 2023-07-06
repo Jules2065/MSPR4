@@ -3,6 +3,11 @@ package io.github.sceneview.sample.arcloudanchor
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.budiyev.android.codescanner.*
 import org.json.JSONArray
@@ -15,6 +20,7 @@ class Activity : AppCompatActivity() {
         lateinit var model3D: String
         lateinit var QRCodeValue: String
         lateinit var globalJSON: JSONArray
+        lateinit var ip_address: EditText
         var flag_api_tast: Boolean = false
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,14 +28,11 @@ class Activity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         appContext = this@Activity
         globalJSON =  JSONArray()
+        model3D = "models/coffee_machine.glb"
 
-        val myIntent = Intent(this, HandleApi::class.java)
-        this.startActivity(myIntent)
+        ip_address = findViewById<EditText>(R.id.ip_address)
 
-
-
-
-        /*val scannerView = findViewById<CodeScannerView>(R.id.scanner_view)
+        val scannerView = findViewById<CodeScannerView>(R.id.scanner_view)
         val launchScan = findViewById<Button>(R.id.launch_scan)
         var onGoingScan: Boolean = false
         codeScanner = CodeScanner(this, scannerView)
@@ -42,12 +45,10 @@ class Activity : AppCompatActivity() {
         codeScanner.scanMode = ScanMode.SINGLE // or CONTINUOUS or PREVIEW
         codeScanner.isAutoFocusEnabled = true // Whether to enable auto focus or not
         codeScanner.isFlashEnabled = false // Whether to enable flash or not
-        val apiTask = ApiTask()
-        apiTask.execute()
         // Callback quand un qr code est décodé
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
-                val myIntent = Intent(this, ApiTask::class.java)
+                val myIntent = Intent(this, HandleApi::class.java)
                 this.startActivity(myIntent)
                 QRCodeValue = it.text
                 Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
@@ -69,12 +70,14 @@ class Activity : AppCompatActivity() {
 
             }
             else{
-                onGoingScan = true
-                launchScan.text = "Arrêter la recherche d'un QR code"
-                scannerView.visibility = View.VISIBLE
-                codeScanner.startPreview()
+                if (ip_address.text.toString() != "") {
+                    onGoingScan = true
+                    launchScan.text = "Arrêter la recherche d'un QR code"
+                    scannerView.visibility = View.VISIBLE
+                    codeScanner.startPreview()
+                }
             }
-        }*/
+        }
 
 
     }

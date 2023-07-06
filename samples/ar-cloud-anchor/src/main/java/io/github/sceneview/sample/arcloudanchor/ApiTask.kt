@@ -21,7 +21,8 @@ class ApiTask : AsyncTask<String, String, String>() {
             var urlConnection: HttpURLConnection? = null
 
             try {
-                url = URL("http://192.168.1.10:8000/customers/$index/orders/$index/products")
+                val ip_adress = Activity.ip_address.text.toString()
+                url = URL("http://$ip_adress:8000/customers/$index/orders/$index/products")
                 //open a URL coonnection
                 urlConnection = url.openConnection() as HttpURLConnection
                 val `in`: InputStream = urlConnection.inputStream

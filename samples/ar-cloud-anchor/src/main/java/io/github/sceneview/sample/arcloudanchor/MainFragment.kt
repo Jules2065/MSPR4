@@ -19,18 +19,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
     lateinit var anchorButton: ExtendedFloatingActionButton
-    lateinit var recordButton: ExtendedFloatingActionButton
+    lateinit var returnBack: ExtendedFloatingActionButton
 
     lateinit var cursorNode: CursorNode
     lateinit var modelNode: ArModelNode
 
     var isLoading = false
-        set(value) {
-            field = value
-            loadingView.isGone = !value
-            anchorButton.isGone = value
-            recordButton.isGone = value
-        }
+
 
     val fileName by lazy { "${requireContext().externalCacheDir?.absolutePath}/screen_record.mp4" }
 
@@ -39,7 +34,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     var isRecording = false
         set(value) {
             field = value
-            recordButton.setText(if (value) R.string.stop else R.string.record)
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,15 +48,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
             setOnClickListener { cursorNode.createAnchor()?.let { anchorOrMove(it) } }
         }
-        recordButton = view.findViewById<ExtendedFloatingActionButton>(R.id.recordButton).apply {
+
+        returnBack = view.findViewById<ExtendedFloatingActionButton>(R.id.returnBack).apply {
             setOnClickListener {
-                isRecording = if (isRecording) {
-                    stopRecording()
-                    false
-                } else {
-                    startRecording()
-                    true
-                }
+                activity?.finish()
             }
         }
 
@@ -85,17 +74,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         cursorNode = CursorNode().apply {
             onHitResult = { node, _ ->
                 if (!isLoading) {
-                    anchorButton.isGone = !node.isTracking
                 }
             }
         }
         sceneView.addChild(cursorNode)
 
-        isLoading = true
         modelNode = ArModelNode(
             modelGlbFileLocation = Activity.model3D,
             onLoaded = { modelInstance ->
-                anchorButton.text = getString(R.string.move_object)
                 anchorButton.setIconResource(R.drawable.ic_target)
                 isLoading = false
             })
@@ -127,8 +113,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun stopRecording() {
-        sceneView.stopMirroring(recorder.surface)
-        recorder.stop()
-        recorder.release()
+        /*if (recorder != null) {
+            sceneView.stopMirroring(recorder.surface)
+            recorder.stop()
+            recorder.release()
+        }*/
     }
 }

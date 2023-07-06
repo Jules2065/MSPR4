@@ -24,6 +24,16 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:ignore="MissingConstraints" />
+    <EditText
+        android:id="@+id/ip_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Debug : Adresse Ip"
+        android:textColor="#000000"
+        android:textColorHint="#808080"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/launch_scan"
+        />
     <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/scanner_view"
         android:layout_width="match_parent"
@@ -38,116 +48,5 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lancer la recherche d'un QR code"
-                android:layout_marginTop="10px"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
